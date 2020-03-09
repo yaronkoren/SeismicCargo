@@ -1,0 +1,23 @@
+{
+	"name": "SeismicCargo",
+	"version": "0.1",
+	"author": "Yaron Koren",
+	"license-name": "GPL-2.0-or-later",
+	"type": "parserhook",
+	"requires": {
+		"MediaWiki": ">= 1.29"
+	},
+	"MessagesDirs": {
+		"SeismicCargo": [
+			"i18n"
+		]
+	},
+	"AutoloadClasses": {
+		"CargoSeismicFormat": "CargoSeismicFormat.php"
+	},
+	"Hooks": {
+		"CargoSetFormatClasses": "CargoSeismicFormat::addFormat",
+		"CargoDisplayExportData": "CargoSeismicFormat::displayData"
+	},
+	"manifest_version": 1
+}
