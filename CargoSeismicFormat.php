@@ -21,6 +21,10 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 	}
 
 	static function convertToSeismicDataStructure( $html ) {
+		// First, change headings - Seismic can't handle <h1>, etc. tags.
+		$html = preg_replace( '/\<h.\>/', '<p>', $html );
+		$html = preg_replace( '/\<\/h.\>/', '</p>', $html );
+
 		preg_match_all( '/(.*?)\<table.*?\>(.*?)\<\/table\>/mis', $html, $matches);
 
 		if ( count( $matches[1] ) == 0 ) {
@@ -31,6 +35,14 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 		$tableHTMLValues = $matches[2];
 
 		$outputData = [];
+		for ( $freeTextNum = 0; $freeTextNum < 10; $freeTextNum++ ) {
+			$freeTextName = 'Text' . ( $freeTextNum + 1 );
+			if ( count( $freeTextValues ) > $freeTextNum ) {
+				$outputData[$freeTextName] = trim( $freeTextValues[$freeTextNum] );
+			} else {
+				$outputData[$freeTextName] = '';
+			}
+		}
 
 		foreach ( $freeTextValues as $i => $freeText ) {
 			$freeTextNum = $i + 1;
@@ -63,17 +75,30 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 			return array();
 		}
 
+		$rowValues = [];
 		preg_match_all( '/\<th.*?\>(.*?)\<\/th\>/mis', $rows[0], $matches2);
-		$columnNames = $matches2[1];
-		if (count( $columnNames ) == 0 ) {
-			return array();
+		$thValues = $matches2[1];
+		for ( $colNum = 0; $colNum < 10; $colNum++ ) {
+			$colName = 'Col' . ( $colNum + 1 );
+			if ( count( $thValues ) > $colNum ) {
+				$rowValues[$colName] = trim( $thValues[$colNum] );
+			} else {
+				$rowValues[$colName] = '';
+			}
 		}
+		$tableValues[] = $rowValues;
+
 		for ( $rowNum = 1; $rowNum < count( $rows ); $rowNum++ ) {
 			$rowValues = [];
 			preg_match_all( '/\<td.*?\>(.*?)\<\/td\>/mis', $rows[$rowNum], $matches3);
-			foreach( $columnNames as $columnNum => $columnName ) {
-				$columnName = trim( $columnName );
-				$rowValues[$columnName] = trim( $matches3[1][$columnNum] );
+			$tdValues = $matches3[1];
+			for ( $colNum = 0; $colNum < 10; $colNum++ ) {
+				$colName = 'Col' . ( $colNum + 1 );
+				if ( count( $tdValues ) > $colNum ) {
+					$rowValues[$colName] = trim( $tdValues[$colNum] );
+				} else {
+					$rowValues[$colName] = '';
+				}
 			}
 			$tableValues[] = $rowValues;
 		}
