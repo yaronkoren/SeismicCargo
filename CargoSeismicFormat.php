@@ -28,11 +28,12 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 		preg_match_all( '/(.*?)\<table.*?\>(.*?)\<\/table\>/mis', $html, $matches);
 
 		if ( count( $matches[1] ) == 0 ) {
-			return $html;
+			$freeTextValues = [ $html ];
+			$tableHTMLValues = [];
+		} else {
+			$freeTextValues = $matches[1];
+			$tableHTMLValues = $matches[2];
 		}
-
-		$freeTextValues = $matches[1];
-		$tableHTMLValues = $matches[2];
 
 		$outputData = [];
 		for ( $freeTextNum = 0; $freeTextNum < 10; $freeTextNum++ ) {
