@@ -79,17 +79,19 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 		$rowValues = [];
 		preg_match_all( '/\<th.*?\>(.*?)\<\/th\>/mis', $rows[0], $matches2);
 		$thValues = $matches2[1];
-		for ( $colNum = 0; $colNum < 10; $colNum++ ) {
-			$colName = 'Col' . ( $colNum + 1 );
-			if ( count( $thValues ) > $colNum ) {
-				$rowValues[$colName] = trim( $thValues[$colNum] );
-			} else {
-				$rowValues[$colName] = '';
+		if ( count( $thValues ) > 0 ) {
+			for ( $colNum = 0; $colNum < 10; $colNum++ ) {
+				$colName = 'Col' . ( $colNum + 1 );
+				if ( count( $thValues ) > $colNum ) {
+					$rowValues[$colName] = trim( $thValues[$colNum] );
+				} else {
+					$rowValues[$colName] = '';
+				}
 			}
+			$tableValues[] = $rowValues;
 		}
-		$tableValues[] = $rowValues;
 
-		for ( $rowNum = 1; $rowNum < count( $rows ); $rowNum++ ) {
+		for ( $rowNum = count( $tableValues ); $rowNum < count( $rows ); $rowNum++ ) {
 			$rowValues = [];
 			preg_match_all( '/\<td.*?\>(.*?)\<\/td\>/mis', $rows[$rowNum], $matches3);
 			$tdValues = $matches3[1];
