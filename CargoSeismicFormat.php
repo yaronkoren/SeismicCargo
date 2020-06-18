@@ -51,8 +51,10 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 		}
 
 		$lastTableTag = strrpos( $html, '</table>' );
-		$lastFreeTextValue = trim( substr( $html, $lastTableTag + 8 ) );
-		$outputData['Text' . ++$freeTextNum] = $lastFreeTextValue;
+		if ( $lastTableTag !== false ) {
+			$lastFreeTextValue = trim( substr( $html, $lastTableTag + 8 ) );
+			$outputData['Text' . ++$freeTextNum] = $lastFreeTextValue;
+		}
 
 		$outputData['Tables'] = [];
 
