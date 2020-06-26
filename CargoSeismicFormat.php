@@ -22,8 +22,11 @@ class CargoSeismicFormat extends CargoDeferredFormat {
 
 	static function convertToSeismicDataStructure( $html ) {
 		// First, change headings - Seismic can't handle <h1>, etc. tags.
-		$html = preg_replace( '/\<h.\>/', '<p>', $html );
-		$html = preg_replace( '/\<\/h.\>/', '</p>', $html );
+		$html = preg_replace( '/\<h1\>/', '<span>', $html );
+		$html = preg_replace( '/\<h2\>/', '<span style="font-family: Roboto; font-size: 12pt;">', $html );
+		$html = preg_replace( '/\<h3\>/', '<span style="font-family: Roboto; font-size: 12pt; font-style: italic;">', $html );
+		$html = preg_replace( '/\<h4\>/', '<span style="font-family: Roboto; font-size: 12pt; text-decoration: underline;">', $html );
+		$html = preg_replace( '/\<\/h.\>/', '</span>', $html );
 
 		preg_match_all( '/(.*?)\<table.*?\>(.*?)\<\/table\>/mis', $html, $matches);
 
